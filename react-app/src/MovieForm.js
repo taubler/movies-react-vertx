@@ -26,7 +26,7 @@ class MovieForm extends Component {
 	}
 
 	toGenreOption(g) {
-		return (<option value={g.value}>{g.label}</option>)
+		return (<option key={g.value} value={g.value}>{g.label}</option>)
 	}
 
 	render() {
