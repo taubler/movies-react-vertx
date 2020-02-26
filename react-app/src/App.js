@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
-import MovieForm from "./MovieForm"
 import MovieList from "./MovieList"
+import MovieForm from "./MovieForm"
 
 const genres = [ 
   {value: 'action', label: 'Action'}, 
@@ -12,22 +12,22 @@ const genres = [
 ]
 
 const movies = [ 
-  {genre: 'action', title: 'Captain Marvel'}, 
-  {genre: 'action', title: 'V'}, 
-  {genre: 'action', title: 'Midway'}, 
-  {genre: 'comedy', title: 'Groundhog Day'}, 
-  {genre: 'thriller', title: 'Scream'} 
+  {genre: 'action', title: 'Captain Marvel', guid: '6530b64b-0753-4629-a1bb-6716109b964b'}, 
+  {genre: 'comedy', title: 'Groundhog Day', guid: 'ba5b9881-7128-485f-84d5-afc50f199b23'}, 
+  {genre: 'action', title: 'Midway', guid: '2e93da48-d451-4df0-b77c-41dddde428ad'}, 
+  {genre: 'drama', title: 'Dances With Wolves', guid: 'f207c1a0-3bef-48f1-a596-29b84887e94d'}, 
+  {genre: 'thriller', title: 'Scream', guid: '3733f942-6a44-4eb9-af54-586d9d15eb67'} 
 ]
 
 function App() {
   return (
     <div className="App">
-        <h1>
+      <h1>
           Movies
-        </h1>
+      </h1>
       <div>
         <MovieForm genres={genres} />
-        <MovieList movies={movies} />
+        <MovieList movies={movies} genres={genres} />
       </div>
     </div>
   );
