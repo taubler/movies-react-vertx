@@ -1,17 +1,15 @@
 package com.me;
 
-import java.util.UUID;
-
 import org.apache.commons.lang3.StringUtils;
 
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpServer;
-import io.vertx.core.http.HttpServerResponse;
 import io.vertx.core.json.Json;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
+import io.vertx.ext.web.handler.BodyHandler;
 
 public class AppServer {
 
@@ -21,13 +19,11 @@ public class AppServer {
         HttpServer server = vertx.createHttpServer();
 
         Router router = Router.router(vertx);
+        router.route().handler(BodyHandler.create());
 
-        router.get("/movie").handler(ctx -> {
-            HttpServerResponse resp = ctx.response();
-            resp.end("No movies!"); 
-        });
+        router.get("/movies").handler(ctx -> getMovie(ctx, vertx));
         
-        router.post("/movie").handler(ctx -> postMovie(ctx, vertx));
+        router.post("/movies").handler(ctx -> postMovie(ctx, vertx));
 
         server.requestHandler(router).listen(80, http -> {
             if (http.succeeded()) {
@@ -36,16 +32,28 @@ public class AppServer {
                 LOGGER.info("MovieApp HTTP server failed to start");
             }
         });
-
+    }
+    
+    private void getMovie(RoutingContext ctx, Vertx vertx) {
+    	vertx.eventBus().request("service.movie-get", "", res -> {
+    		if ( res.succeeded() ) {
+    			ctx.response()
+    			.putHeader("content-type", "application/json")
+    			.end( res.result().body().toString() );
+    		} else {
+    			ctx.fail( res.cause() );
+    		}
+    	});    	
     }
     
     private void postMovie(RoutingContext ctx, Vertx vertx) {
     	final Movie movie = Json.decodeValue(ctx.getBodyAsString(), Movie.class);
     	if (StringUtils.isEmpty(movie.getGenre()) || StringUtils.isEmpty(movie.getTitle())) {
-    		ctx.response().setStatusCode(400).end();
+    		ctx.response()
+    		.setStatusCode(400)
+			.putHeader("content-type", "application/json")
+			.end("{ 'error': 'Title and Genre must by non-empty' }");
     	}
-    	//TODO below, do that on the "database" end
-//    	movie.setGuid(UUID.randomUUID());
     	vertx.eventBus().request("service.movie-add", Json.encode(movie), res -> {
     		if ( res.succeeded() ) {
     			ctx.response()
@@ -56,17 +64,5 @@ public class AppServer {
     		}
     	});
     }
-    
-    /*
-     * Receiver must explicitly reply, like:
-     * private void handleEventBusResponse( AsyncResult<Message<Object>> res, RoutingContext ctx ) {
-		if ( res.succeeded() ) {
-			ctx.response().end( res.result().body().toString() );
-		} else {
-			ctx.fail( res.cause() );
-		}
-		res.result().reply("ok");
-	}
-     */
 
 }
