@@ -19,6 +19,24 @@ const movies = [
   {genre: 'thriller', title: 'Scream', guid: '3733f942-6a44-4eb9-af54-586d9d15eb67'} 
 ]
 
+// new
+const eventDispatcher = {
+	listeners: {},
+	dispatch: function(event, data) {
+		if (this.listeners[event]) {
+			this.listeners[event].forEach(function(l) {
+				l(data);
+			});
+		}
+	},
+	subscribe: function(event, f) {
+		if (!this.listeners[event]) this.listeners[event] = [];
+		this.listeners[event].push(f)
+	}
+}
+// also new is that rendering passes eventDispatcher to each component
+// end new
+
 function App() {
   return (
     <div className="App">
@@ -26,8 +44,8 @@ function App() {
           Movies
       </h1>
       <div>
-        <MovieForm genres={genres} />
-        <MovieList movies={movies} genres={genres} />
+        <MovieForm genres={genres} eventDispatcher={eventDispatcher} />
+        <MovieList genres={genres} eventDispatcher={eventDispatcher} />
       </div>
     </div>
   );

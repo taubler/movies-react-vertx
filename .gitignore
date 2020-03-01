@@ -1,3 +1,4 @@
 .DS_Store
 vertx/.project
 vertx/target
+vertx/src/main/resources/webroot

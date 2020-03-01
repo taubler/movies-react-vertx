@@ -1,17 +1,49 @@
 import React, { Component } from "react";
 import './MovieList.css'
 
+//new
+var xhr;
+
 class MovieList extends Component {
 
 	constructor(props) {
 		super(props);
 	    this.toMovie = this.toMovie.bind(this);
-	    this.genreLabel = this.genreLabel.bind(this);
+	    //new
+		this.state = {
+			movies: []
+		}
+		this.sendRequest = this.sendRequest.bind(this);
+		this.processRequest = this.processRequest.bind(this);
+		this.props.eventDispatcher.subscribe("addMovie", this.sendRequest);
+	    //end new
 	}
 	
-	genreLabel(g) {
-		return "?";
+	// new
+	componentDidMount() {
+		this.sendRequest()
 	}
+
+	sendRequest() {
+		let url = process.env.REACT_APP_SERVER_URL || "http://localhost";
+		console.log("Will request movies from " + url)
+		xhr = new XMLHttpRequest();
+		xhr.open("GET", url + "/movies")
+		xhr.send();
+		xhr.addEventListener("readystatechange", this.processRequest, false);
+	}
+
+	processRequest() {
+		if (xhr.readyState === 4 && xhr.status === 200) {
+			console.log(xhr.responseText)
+			var response = JSON.parse(xhr.responseText);
+			//also new is that in render(), this.props.movies becomes this.state.movies
+			this.setState({
+				movies: response
+			})
+		}
+	}
+	// end new
 	
 	toMovie(m) {
 		var g = "?";
@@ -33,7 +65,7 @@ class MovieList extends Component {
 					<th>Genre</th>
 				</tr>
 				</tbody>
-				{this.props.movies.map(this.toMovie)}
+				{this.state.movies.map(this.toMovie)}
 			</table>
 		)
 	}
