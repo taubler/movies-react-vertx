@@ -11,15 +11,6 @@ const genres = [
   {value: 'musical', label: 'Musical'} 
 ]
 
-const movies = [ 
-  {genre: 'action', title: 'Captain Marvel', guid: '6530b64b-0753-4629-a1bb-6716109b964b'}, 
-  {genre: 'comedy', title: 'Groundhog Day', guid: 'ba5b9881-7128-485f-84d5-afc50f199b23'}, 
-  {genre: 'action', title: 'Midway', guid: '2e93da48-d451-4df0-b77c-41dddde428ad'}, 
-  {genre: 'drama', title: 'Dances With Wolves', guid: 'f207c1a0-3bef-48f1-a596-29b84887e94d'}, 
-  {genre: 'thriller', title: 'Scream', guid: '3733f942-6a44-4eb9-af54-586d9d15eb67'} 
-]
-
-// new
 const eventDispatcher = {
 	listeners: {},
 	dispatch: function(event, data) {
@@ -34,8 +25,6 @@ const eventDispatcher = {
 		this.listeners[event].push(f)
 	}
 }
-// also new is that rendering passes eventDispatcher to each component
-// end new
 
 function App() {
   return (

@@ -35,10 +35,8 @@ class MovieForm extends Component {
 	//new
 
 	tryCreateMovie() {
-		let url = process.env.REACT_APP_SERVER_URL || "http://localhost";
-		console.log("Will add movie to " + url)
 		xhr = new XMLHttpRequest();
-		xhr.open("POST", url + "/movies")
+		xhr.open("POST", "http://localhost/movies")
 		xhr.send(JSON.stringify({ "title": this.state.title, "genre": this.state.genre }));
 		xhr.addEventListener("readystatechange", this.processRequest, false);
 	}

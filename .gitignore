@@ -2,3 +2,4 @@
 vertx/.project
 vertx/target
 vertx/src/main/resources/webroot
+react-app/package-lock.json
